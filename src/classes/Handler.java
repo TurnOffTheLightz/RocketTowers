@@ -146,6 +146,7 @@ public class Handler {
                     TankCannon tc = new TankCannon(x*32,y*32,96,32,Id.weapon,this,0);
                     addWeapon(cannon);
                     addWeapon(tc);
+                    cannon.readyToShoot=true;
                 }
                 if(red==254&&green==0&&blue==0){
                     Cannon cannon = new Cannon(x*32,y*32,96,32, Id.weapon,this,1);

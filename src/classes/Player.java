@@ -15,7 +15,10 @@ import states.*;
 import tile.Tile;
 import tile.tower.tower_components.TowerPiece;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
@@ -28,6 +31,12 @@ public class Player{
     public boolean currentPlayer=false;
     private boolean swap=false;
     private boolean justOneNewAmmo=true;
+
+    private boolean explosion=false;
+    private Point explosionPoint;
+    private int explosionCounter=0;
+    private int explosionFrames=0;
+    private BufferedImage explosionImage[];
 
     public AmmoType currentAmmoType;
     public AmmoBoostType currentAmmoBoostType;
@@ -96,7 +105,7 @@ public class Player{
         Ammo cannonFrozen = new CannonBall(26, 26, Id.ammo, handler, whichSide,AmmoBoostType.classicFrozen);
 
         Ammo rocket = new Rocket(26, 26, Id.ammo, handler, whichSide,AmmoBoostType.rocket);
-        Ammo r1 = new R_1(64, 32, Id.ammo, handler, whichSide,AmmoBoostType.r_1);
+        Ammo r1 = new R_1(64, 64, Id.ammo, handler, whichSide,AmmoBoostType.r_1);
 
         this.ammoList.add(cannon);
         this.ammoList.add(cannonFire);
@@ -110,6 +119,16 @@ public class Player{
         currentAmmoType = AmmoType.classic;
         currentAmmoBoostType = AmmoBoostType.classic;
         ammoList.get(0).setActive(true);
+
+        explosionImage = new BufferedImage[8];
+        try {
+            for(int i=0;i<explosionImage.length;i++){
+                    explosionImage[i]= ImageIO.read(getClass().getResource("/explosion/exploxion"+(i+1)+".png"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void render(Graphics g){
@@ -124,7 +143,12 @@ public class Player{
 //            g.setColor(Color.RED);
 //            g.fillRect(aimbotX,Game.HEIGHT*Game.SCALE-116,32,5);
         }
+        if(explosion){
+     g.drawImage(explosionImage[explosionFrames],explosionPoint.x,explosionPoint.y,explosionImage[explosionFrames].getWidth(),explosionImage[explosionFrames].getHeight(),null);
+        }
     }
+
+
     public void tick() {
         if(currentPlayer){
             if(!Game.shooting){
@@ -347,9 +371,19 @@ public class Player{
 
                                     }
                                 }
+                                if(currentAmmoType==AmmoType.classic)   explosionPoint = new Point((int)ammoObj.x-48,(int)ammoObj.y-48);
+                                else if(currentAmmoType==AmmoType.r_1){
+                                    if(whichSide==0){
+                                        explosionPoint = new Point((int)ammoObj.x-16,(int)ammoObj.y-32);
+                                    }else if(whichSide==1){
+                                        explosionPoint = new Point((int)ammoObj.x-48,(int)ammoObj.y-32);
+                                    }
+                                }
+                                explosion=true;
                                 handler.removeAmmunition(ammoObj);
                                 ammoObj.die();
                                 swap=true;
+                                break;
                             }
                         }
                     }
@@ -379,6 +413,11 @@ public class Player{
                             handler.playerright.currentPlayer=true;
                             Game.leftHud.currentHud=false;
                             Game.rightHud.currentHud=true;
+                            for(Weapon ww: handler.playerright.weapons){
+                                if(handler.playerright.currentWeaponType==ww.weaponType){
+                                    ww.readyToShoot=true;
+                                }
+                            }
                         }  else if(Game.gameState==GameState.rightMoves){
                             Game.shooting = false;
                             Game.gameState = GameState.leftMoves;
@@ -386,7 +425,13 @@ public class Player{
                             handler.playerleft.currentPlayer=true;
                             Game.leftHud.currentHud=true;
                             Game.rightHud.currentHud=false;
+                            for(Weapon ww: handler.playerleft.weapons){
+                                if(handler.playerleft.currentWeaponType==ww.weaponType){
+                                    ww.readyToShoot=true;
+                                }
+                            }
                         }
+
                         if(Game.leftHud.isOpened()){
                             Game.leftHud.setClosing(true);
                             Game.leftHud.setOpened(false);
@@ -396,6 +441,18 @@ public class Player{
                             Game.rightHud.setOpened(false);
                         }
                     }
+                }
+            }
+        }
+
+        if(explosion){
+            explosionCounter++;
+            if(explosionCounter%3==0){
+                explosionFrames++;
+                if(explosionFrames>7){
+                    explosion=false;
+                    explosionCounter=0;
+                    explosionFrames=0;
                 }
             }
         }

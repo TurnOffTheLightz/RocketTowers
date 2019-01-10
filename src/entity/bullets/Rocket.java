@@ -47,13 +47,6 @@ public class Rocket extends Ammo {
         }
 
     }
-    private void setRotateAngle(){
-        if(whichSide==0){
-            this.angle = Math.atan2(vely,velx);
-        }else if(whichSide==1){
-            this.angle = Math.atan2(velx,vely)+Math.PI/2;
-        }
-    }
     public void die(){
         handler.removeAmmunition(this);
     }

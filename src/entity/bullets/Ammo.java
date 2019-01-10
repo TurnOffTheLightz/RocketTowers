@@ -12,6 +12,7 @@ import tile.Trail;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.awt.image.*;
 import java.util.Arrays;
 
@@ -89,6 +90,46 @@ public abstract class Ammo extends Entity {
             img = tmp;
         }
         return ((DataBufferInt)img.getRaster().getDataBuffer()).getData();
+    }
+
+    public void setRotateAngle(){
+        if(whichSide==0){
+            this.angle = Math.floor(Math.atan2(vely,velx));
+        }else if(whichSide==1){
+            this.angle = Math.floor(Math.atan2(velx,vely));
+        }
+    }
+    public  static BufferedImage rotateImage(BufferedImage rotateImage, double angle) {
+        angle %= 360;
+        if (angle < 0) angle += 360.0;
+
+        AffineTransform tx = new AffineTransform();
+        tx.rotate(Math.toRadians(angle), rotateImage.getWidth()/2.0,rotateImage.getHeight() / 2.0);
+
+        double ytrans = 0;
+        double xtrans = 0;
+        if( angle <= 90 ){
+            xtrans = tx.transform(new Point2D.Double(0, rotateImage.getHeight()), null).getX();
+            ytrans = tx.transform(new Point2D.Double(0.0, 0.0), null).getY();
+        }
+        else if( angle <= 180 ){
+            xtrans = tx.transform(new Point2D.Double(rotateImage.getWidth(), rotateImage.getHeight()), null).getX();
+            ytrans = tx.transform(new Point2D.Double(0, rotateImage.getHeight()), null).getY();
+        }
+        else if( angle <= 270 ){
+            xtrans = tx.transform(new Point2D.Double(rotateImage.getWidth(), 0), null).getX();
+            ytrans = tx.transform(new Point2D.Double(rotateImage.getWidth(), rotateImage.getHeight()), null).getY();
+        }
+        else{
+            xtrans = tx.transform(new Point2D.Double(0, 0), null).getX();
+            ytrans = tx.transform(new Point2D.Double(rotateImage.getWidth(), 0), null).getY();
+        }
+
+        AffineTransform translationTransform = new AffineTransform();
+        translationTransform.translate(-xtrans, -ytrans);
+        tx.preConcatenate(translationTransform);
+
+        return new AffineTransformOp(tx, AffineTransformOp.TYPE_BICUBIC).filter(rotateImage, null);
     }
 
 }

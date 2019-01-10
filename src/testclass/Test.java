@@ -178,7 +178,7 @@ public class Test extends JPanel implements Runnable
     }
     protected int[] updatePixels(){
         try {
-            this.img = ImageIO.read(getClass().getResource("/kiosk.png"));
+            this.img = ImageIO.read(getClass().getResource("/sheet.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -17,17 +17,12 @@ public class DrawingPanel extends JPanel {
     int[]pixels;
     BufferedImage img;
     public DrawingPanel(){
-        try {
-            this.img = ImageIO.read(getClass().getResource("/pociskkurwa.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        pixels = loadImage(img);
+//        pixels = loadImage(img);
     }
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
         if(Game.shooting&&ammoObj!=null){
-            ammoObj.rotate(pixels);
+//            ammoObj.rotate(pixels);
         }
 
     }

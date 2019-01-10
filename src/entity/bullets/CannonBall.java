@@ -79,20 +79,12 @@ public class CannonBall extends Ammo {
         if(active) {
             x += velx;
             y += vely;
-            setRotateAngle();
             if(Game.frames%20==0) this.frames++;
             if(frames>3) frames=0;
             ticks++;
             if(ticks>10)
                 handler.addTile(new Trail((int)x,(int)y,width,height,id.trail,handler,whichSide,particle[frames].getBufferedImage()));
 
-        }
-    }
-    private void setRotateAngle(){
-        if(whichSide==0){
-            this.angle = Math.atan2(vely,velx);
-        }else if(whichSide==1){
-            this.angle = Math.atan2(velx,vely)+Math.PI/2;
         }
     }
 

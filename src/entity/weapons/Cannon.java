@@ -48,8 +48,8 @@ public class Cannon extends Weapon {
     }
 
     public void tick() {
+        if(!Game.shooting&&readyToShoot) this.cannonImg = rotateImage(cannonImg,getAngle());
     }
-
     public void setAmmoType(AmmoType ammoType) {
         this.ammoType = ammoType;
     }
