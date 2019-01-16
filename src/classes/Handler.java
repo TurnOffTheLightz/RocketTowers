@@ -12,11 +12,13 @@ import tile.map_components.Grass;
 import tile.map_components.Ground;
 import tile.tower.tower_components.CannonBox;
 import tile.tower.tower_components.TowerPiece;
+import tile.tower.tower_components.Atom;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Handler {
@@ -37,7 +39,7 @@ public class Handler {
 
     public Handler(){
         try {
-            map = ImageIO.read(getClass().getResource("/map.png"));
+            map = ImageIO.read(getClass().getResource("/testmap.png"));
         } catch (IOException e) {
             System.out.println("Handler constructor adding map error");
         }
@@ -58,7 +60,9 @@ public class Handler {
             tile.get(i).render(g);
         }
         for (int i = 0; i < towerComponents.size(); i++) {
-            towerComponents.get(i).render(g);
+                for(int a = 0;a<towerComponents.get(i).atomList.size();a++){
+                    towerComponents.get(i).atomList.get(a).render(g);
+                }
         }
         for (int i = 0; i < huds.size(); i++) {
             huds.get(i).render(g);
@@ -76,8 +80,10 @@ public class Handler {
         for(int i=0;i<weapons.size();i++){
             weapons.get(i).tick();
         }
-        for(int i=0;i<towerComponents.size();i++){
-            towerComponents.get(i).tick();
+        for (int i = 0; i < towerComponents.size(); i++) {
+            for(int a = 0;a<towerComponents.get(i).atomList.size();a++){
+                towerComponents.get(i).atomList.get(a).tick();
+            }
         }
         for (int i = 0; i < huds.size(); i++) {
             huds.get(i).tick();
@@ -147,6 +153,7 @@ public class Handler {
                     addWeapon(cannon);
                     addWeapon(tc);
                     cannon.readyToShoot=true;
+
                 }
                 if(red==254&&green==0&&blue==0){
                     Cannon cannon = new Cannon(x*32,y*32,96,32, Id.weapon,this,1);
@@ -197,24 +204,44 @@ public class Handler {
             }
         }
         TowerPiece t;
-        t = new TowerPiece(32*2,32*17,64,32,Id.towerPiece,this);//tower0: hidden not hitable
+//        t = new TowerPiece(32*2,32*17,64,32,Id.towerPiece,this);//tower0: hidden not hitable
+//        addTowerComponent(t);
+//        addTile(t);
+//
+//        t = new TowerPiece(32*2,32*17,64,32,Id.crownedTowerPiece,this,0);//tower0
+//        addTowerComponent(t);
+//        addTile(t);
+//
+//        t = new TowerPiece(32*45,32*17,64,32,Id.towerPiece,this);//tower1: hidden, not hitable
+//        addTowerComponent(t);
+//        addTile(t);
+//
+//        t = new TowerPiece(32*45,32*17,64,32,Id.crownedTowerPiece,this,1);//tower1:
+//        addTowerComponent(t);
+//        addTile(t);
+
+        t = new TowerPiece(32*4,32*12,64,32,Id.towerPiece,this);//tower0: hidden not hitable
         addTowerComponent(t);
         addTile(t);
 
-        t = new TowerPiece(32*2,32*17,64,32,Id.crownedTowerPiece,this,0);//tower0
+        t = new TowerPiece(32*6,32*12,64,32,Id.towerPiece,this,0);//tower0
         addTowerComponent(t);
         addTile(t);
 
-        t = new TowerPiece(32*45,32*17,64,32,Id.towerPiece,this);//tower1: hidden, not hitable
+        t = new TowerPiece(32*42,32*12,64,32,Id.towerPiece,this);//tower1: hidden, not hitable
         addTowerComponent(t);
         addTile(t);
 
-        t = new TowerPiece(32*45,32*17,64,32,Id.crownedTowerPiece,this,1);//tower1:
+        t = new TowerPiece(32*44,32*12,64,32,Id.towerPiece,this,1);//tower1:
         addTowerComponent(t);
         addTile(t);
 
-        addTile(new CannonBox(2*32,14*32+25,64,24,Id.cannonBox,this));
-        addTile(new CannonBox(45*32,14*32+25,64,24,Id.cannonBox,this));
+//        addTile(new CannonBox(2*32,14*32+25,64,24,Id.cannonBox,this));
+//        addTile(new CannonBox(45*32,14*32+25,64,24,Id.cannonBox,this));
+
+        addTile(new CannonBox(5*32,8*32+25,64,24,Id.cannonBox,this));
+        addTile(new CannonBox(43*32,8*32+25,64,24,Id.cannonBox,this));
+
 //        addEntity(new Coin(31,30,64,64,Id.coin,this));
 //        addEntity(new Coin(1369,30,64,64,Id.coin,this));
     }

@@ -12,10 +12,14 @@ import graphics.Sprite;
 import input.KeyInput;
 import input.MouseInput;
 import states.*;
+import sun.applet.Main;
 import tile.Tile;
 import tile.tower.tower_components.TowerPiece;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -64,6 +68,8 @@ public class Player{
     private double shootingPower;
     public static boolean ovalDead = false;
     public static boolean ovalDeadSwapping = false;
+    private boolean playShootSoundOnlyOnce = true;
+    private boolean playHitSoundOnlyOnce = true;
 
     private double weaponX0,weaponY0,weaponX1,weaponY1;
     private int aimbotX=-1;
@@ -152,6 +158,9 @@ public class Player{
     public void tick() {
         if(currentPlayer){
             if(!Game.shooting){
+                if(!playShootSoundOnlyOnce) playShootSoundOnlyOnce=true;
+                if(!playHitSoundOnlyOnce) playHitSoundOnlyOnce=true;
+
                 angle=getAngle();
                 int weaponIndex=0;
                 for(int i = 0; i< weapons.size(); i++){
@@ -314,6 +323,11 @@ public class Player{
             }
 
             if(Game.shooting){
+
+                if(playShootSoundOnlyOnce&&(currentWeaponType==WeaponType.cannon||currentWeaponType==WeaponType.tankCannon)){
+                    playShootSoundOnlyOnce=false;
+                    playSound("cannonShootSound.wav");
+                }
                 int xoffset=0,yoffset=0;
                 this.shootingPower = getShootingPower(spaceHeldTicks);
                 if(whichSide==0){
@@ -355,6 +369,10 @@ public class Player{
                         Tile t = handler.tile.get(k);
                         if (t.hitable) {
                             if (ammoObj.getBounds().intersects(t.getBounds())) {
+                                if(playHitSoundOnlyOnce){
+                                    playHitSoundOnlyOnce=false;
+                                    playSound("classicCannonHitSound.wav");
+                                }
                                 if(t.isTowerPiece){
                                     for(int i=0;i<handler.towerComponents.size();i++){
                                         TowerPiece tp = handler.towerComponents.get(i);
@@ -482,10 +500,31 @@ public class Player{
         aimbotX= (int) range;
     }
 
+
+    public static synchronized void playSound(final String url) {
+        new Thread(new Runnable() {
+            // The wrapper thread is unnecessary, unless it blocks on the
+            // Clip finishing; see comments.
+            public void run() {
+                try {
+                    Clip clip = AudioSystem.getClip();
+                    AudioInputStream inputStream;
+                    inputStream = AudioSystem.getAudioInputStream(
+                            Main.class.getResourceAsStream("/audio/" + url));
+                    clip.open(inputStream);
+                    clip.start();
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+        }).start();
+    }
+
+
     public double getShootingPower(int ticks){
         double sp = ticks/17.0;
         if(sp<5){
-            return 7;
+            return 16;
         }else{
             return sp;
         }

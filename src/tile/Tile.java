@@ -6,6 +6,7 @@ import graphics.SpriteSheet;
 import states.Id;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public abstract class Tile{
     public int x,y,width,height;
@@ -13,6 +14,7 @@ public abstract class Tile{
     public boolean hitable=false;
     public Handler handler;
     public Sprite sprite;
+    public BufferedImage img;
     public int whichSide;
     public boolean isTowerPiece=false;
 

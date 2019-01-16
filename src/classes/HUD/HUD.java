@@ -82,7 +82,7 @@ public class HUD {
             if(Game.gameState== GameState.leftMoves){
                 g.setColor(Color.red);
                 g.setFont(new Font("Courier",Font.HANGING_BASELINE,44));
-                g.drawString("PLAYER 1 TURN",50,300);
+                g.drawString("PLAYER 1 TURN",50,150);
 
                 g.setColor(Color.white);
                 g.setFont(new Font("Arial",Font.ITALIC,16));
@@ -99,7 +99,7 @@ public class HUD {
             if(Game.gameState==GameState.rightMoves){
                 g.setColor(Color.red);
                 g.setFont(new Font("Courier",Font.HANGING_BASELINE,44));
-                g.drawString("PLAYER 2 TURN",777,300);
+                g.drawString("PLAYER 2 TURN",777,150);
 
                 g.setColor(Color.white);
                 g.setFont(new Font("Arial",Font.ITALIC,16));

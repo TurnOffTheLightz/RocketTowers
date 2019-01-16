@@ -76,10 +76,10 @@ public class R_1 extends Ammo {
             x+=velx;
             y+=vely;
             setRotateAngle();
-            this.img = rotateImage(img,angle);
+//            this.img = rotateImage(img,angle);
             if(Game.frames%20==0) this.frames++;
             if(frames>3) frames=3;
-//            handler.addTile(new Trail((int)x,(int)y,width,height,id.trail,handler,whichSide,img));
+            handler.addTile(new Trail((int)x,(int)y,width,height,id.trail,handler,whichSide,img));
         }
     }
 
